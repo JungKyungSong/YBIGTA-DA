@@ -1,0 +1,51 @@
+1.
+select country, count(distinct offices.officeCode) as office수, count(distinct employeeNumber) as employee수
+from offices
+left join employees on offices.officeCode = employees.officeCode
+group by 1;
+
+2.
+select customerNumber from customers 
+where contactFirstName like "R%";
+
+3.
+select count(distinct orderNumber) as 주문건수
+from orders
+left join customers on orders.customerNumber = customers.customerNumber
+where country = 'USA' AND (status = "Cancelled" OR status = "On Hold");
+
+4.
+select offices.officeCode, count(distinct customerNumber)
+from offices
+left join employees on offices.officeCode = employees.officeCode
+left join customers on employees.employeeNumber = customers.salesRepEmployeeNumber
+group by 1
+order by count(distinct customerNumber) desc
+limit 1;
+
+5.
+select extract(year from paymentDate) as year, extract(month from paymentDate) as month, payments.customerNumber, payments.amount, customerName
+from payments
+left join customers on payments.customerNumber = customers.customerNumber
+where extract(year from paymentDate)=2004 AND extract(month from paymentDate)=11
+order by amount desc 
+limit 1;
+
+6.
+select extract(year from orderDate) as year, extract(month from orderDate) as month,
+min(datediff(shippedDate, orderDate)) as 최소, max(datediff(shippedDate, orderDate)) as 최대 
+from orders
+where extract(year from orderDate) = 2005 AND extract(month from orderDate) = 1;
+
+7.
+select payments.customerNumber, extract(year from paymentDate) as year, sum(amount), employeeNumber 
+from payments
+left join customers on payments.customerNumber = customers.customerNumber
+left join employees on customers.salesRepEmployeeNumber = employees.employeeNumber
+where extract(year from paymentDate)=2004
+group by 1
+order by sum(amount) desc
+limit 1; 
+
+
+
